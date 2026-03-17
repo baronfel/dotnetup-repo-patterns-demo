@@ -35,7 +35,12 @@ jobs:
       # The same command works identically on every platform — this is
       # the key value proposition for cross-platform teams.
       - name: Install .NET SDK via dotnetup
-        run: dotnetup install --install-path .dotnet --manifest-path .dotnetup.json --set-default-install
+        run: dotnetup install --install-path .dotnet --manifest-path .dotnetup.json
+
+      - name: Setup dotnetup hive
+        run:
+          echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> "$GITHUB_ENV"
+          echo "PATH=${{ github.workspace }}/.dotnet:${PATH}" >> "$GITHUB_ENV"
 
       - name: Show dotnet install
         run: dotnet --info
