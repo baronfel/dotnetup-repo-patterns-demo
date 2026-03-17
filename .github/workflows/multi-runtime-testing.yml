@@ -30,11 +30,13 @@ jobs:
       - name: Setup dotnetup
         uses: ./.github/actions/setup-dotnetup
 
-      # dotnetup reads the global.json to determine the required SDK version
-      # and installs it. With rollForward: latestPatch, this resolves to
-      # the 10.0.1xx feature band channel.
       - name: Install .NET SDK via dotnetup
-        run: dotnetup install
+        run: dotnetup install --install-path .dotnet --manifest-path .dotnetup.json
+
+      - name: Setup dotnetup hive
+        run: |
+          echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> "$GITHUB_ENV" \
+          && echo "PATH=${{ github.workspace }}/.dotnet:${PATH}" >> "$GITHUB_ENV"
 
       # Install the runtimes listed in global.json's "runtimes.dotnet" array.
       # The SDK already provides the runtime matching its major version, so
@@ -46,17 +48,12 @@ jobs:
             major=$(echo "$version" | cut -d. -f1)
             if [ "$major" != "$sdk_major" ]; then
               echo "Installing runtime $version"
-              dotnetup runtime install "$version"
+              dotnetup runtime install "$version" --install-path .dotnet --manifest-path .dotnetup.json
             fi
           done
-
-      - name: Restore
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --no-restore
 
       # Tests run against all three target frameworks (net8.0, net9.0, net10.0).
       # Because dotnetup installed all the required runtimes, this Just Works™.
       - name: Test (all target frameworks)
-        run: dotnet test --no-build --verbosity normal
+        working-directory: scenarios/multi-runtime-testing/test/MyLib.Tests
+        run: dotnet test

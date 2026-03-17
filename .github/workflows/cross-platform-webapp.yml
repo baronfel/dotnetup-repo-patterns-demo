@@ -46,5 +46,5 @@ jobs:
         run: dotnet --info
 
       - name: Publish
-        working-directory: scenarios/cross-platform-webapp/src
+        working-directory: scenarios/cross-platform-webapp/src/MyApp.Web
         run: dotnet publish
