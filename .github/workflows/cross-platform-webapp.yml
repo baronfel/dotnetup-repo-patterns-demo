@@ -1,0 +1,52 @@
+name: "Scenario: Cross-Platform Webapp"
+
+on:
+  push:
+    paths:
+      - "scenarios/cross-platform-webapp/**"
+      - ".github/workflows/cross-platform-webapp.yml"
+  pull_request:
+    paths:
+      - "scenarios/cross-platform-webapp/**"
+      - ".github/workflows/cross-platform-webapp.yml"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: scenarios/cross-platform-webapp
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup dotnetup
+        uses: ./.github/actions/setup-dotnetup
+
+      # dotnetup reads the global.json and installs the pinned SDK version.
+      # The same command works identically on every platform — this is
+      # the key value proposition for cross-platform teams.
+      - name: Install .NET SDK via dotnetup
+        run: dotnetup install
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Publish
+        run: dotnet publish src/MyApp.Web --no-build --configuration Release --output ./publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: webapp-${{ matrix.os }}
+          path: scenarios/cross-platform-webapp/publish/

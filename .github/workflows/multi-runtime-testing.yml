@@ -1,0 +1,62 @@
+name: "Scenario: Multi-Runtime Testing"
+
+on:
+  push:
+    paths:
+      - "scenarios/multi-runtime-testing/**"
+      - ".github/workflows/multi-runtime-testing.yml"
+  pull_request:
+    paths:
+      - "scenarios/multi-runtime-testing/**"
+      - ".github/workflows/multi-runtime-testing.yml"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: scenarios/multi-runtime-testing
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup dotnetup
+        uses: ./.github/actions/setup-dotnetup
+
+      # dotnetup reads the global.json to determine the required SDK version
+      # and installs it. With rollForward: latestPatch, this resolves to
+      # the 10.0.1xx feature band channel.
+      - name: Install .NET SDK via dotnetup
+        run: dotnetup install
+
+      # Install the runtimes listed in global.json's "runtimes.dotnet" array.
+      # The SDK already provides the runtime matching its major version, so
+      # we filter that out and install the rest.
+      - name: Install additional runtimes for test targets
+        run: |
+          sdk_major=$(jq -r '.sdk.version | split(".")[0]' global.json)
+          jq -r '.runtimes.dotnet[]' global.json | while read -r version; do
+            major=$(echo "$version" | cut -d. -f1)
+            if [ "$major" != "$sdk_major" ]; then
+              echo "Installing runtime $version"
+              dotnetup runtime install "$version"
+            fi
+          done
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      # Tests run against all three target frameworks (net8.0, net9.0, net10.0).
+      # Because dotnetup installed all the required runtimes, this Just Works™.
+      - name: Test (all target frameworks)
+        run: dotnet test --no-build --verbosity normal

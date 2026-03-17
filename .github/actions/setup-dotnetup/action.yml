@@ -1,0 +1,25 @@
+name: 'Setup dotnetup'
+description: 'Builds dotnetup from source (dotnet/sdk release/dnup branch) and adds it to PATH'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Clone dotnet/sdk (release/dnup)
+      shell: bash
+      run: | 
+        git clone --depth 1 --branch release/dnup \
+          https://github.com/dotnet/sdk.git \
+          "${{ runner.temp }}/dotnet-sdk"
+
+    - name: Publish dotnetup (NativeAOT)
+      shell: bash
+      run: |
+        dotnet publish \
+          "${{ runner.temp }}/dotnet-sdk/src/Installer/dotnetup" \
+          -c Release \
+          -o "${{ runner.temp }}/dotnetup-bin"
+
+    - name: Add dotnetup to PATH
+      shell: bash
+      run: |
+        echo "${{ runner.temp }}/dotnetup-bin" >> "$GITHUB_PATH"
