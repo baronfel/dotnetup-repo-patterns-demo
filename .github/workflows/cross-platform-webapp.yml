@@ -38,10 +38,12 @@ jobs:
         run: dotnetup install --install-path .dotnet --manifest-path .dotnetup.json
 
       - name: Setup dotnetup hive
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
           echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> "$GITHUB_ENV" \
-          && echo "PATH=${{ github.workspace }}/.dotnet:${PATH}" >> "$GITHUB_ENV"
-
+          && echo "${{ github.workspace }}/.dotnet" >> "$GITHUB_PATH"
+      
       - name: Show dotnet install
         run: dotnet --info
 
