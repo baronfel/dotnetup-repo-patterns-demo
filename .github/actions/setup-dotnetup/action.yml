@@ -12,18 +12,37 @@ runs:
           "${{ runner.temp }}/dotnet-sdk"
 
     - name: Restore toolsets
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         . "${{ runner.temp }}/dotnet-sdk/eng/common/tools.sh" \
         && . "${{ runner.temp }}/dotnet-sdk/eng/configure-toolset.sh" \
         && . "${{ runner.temp }}/dotnet-sdk/eng/restore-toolset.sh"
 
+    - name: Restore toolsets
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        . "${{ runner.temp }}/dotnet-sdk/eng/common/tools.ps1";
+        . "${{ runner.temp }}/dotnet-sdk/eng/configure-toolset.ps1";
+        . "${{ runner.temp }}/dotnet-sdk/eng/restore-toolset.ps1";
+
     - name: Publish dotnetup (NativeAOT)
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         ${{ runner.temp }}/dotnet-sdk/.dotnet/dotnet publish \
           "${{ runner.temp }}/dotnet-sdk/src/Installer/dotnetup" \
           -c Release \
+          -o "${{ runner.temp }}/dotnetup-bin"
+
+    - name: Publish dotnetup (NativeAOT)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        ${{ runner.temp }}/dotnet-sdk/.dotnet/dotnet.exe publish `
+          "${{ runner.temp }}/dotnet-sdk/src/Installer/dotnetup" `
+          -c Release `
           -o "${{ runner.temp }}/dotnetup-bin"
 
     - name: Add dotnetup to PATH
