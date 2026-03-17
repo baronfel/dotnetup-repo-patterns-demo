@@ -38,23 +38,13 @@ jobs:
         run: dotnetup install --install-path .dotnet --manifest-path .dotnetup.json
 
       - name: Setup dotnetup hive
-        run:
-          echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> "$GITHUB_ENV"
-          echo "PATH=${{ github.workspace }}/.dotnet:${PATH}" >> "$GITHUB_ENV"
+        run: |
+          echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> "$GITHUB_ENV" \
+          && echo "PATH=${{ github.workspace }}/.dotnet:${PATH}" >> "$GITHUB_ENV"
 
       - name: Show dotnet install
         run: dotnet --info
-      - name: Restore
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --no-restore --configuration Release
 
       - name: Publish
-        run: dotnet publish src/MyApp.Web --no-build --configuration Release --output ./publish
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: webapp-${{ matrix.os }}
-          path: scenarios/cross-platform-webapp/publish/
+        working-directory: scenarios/cross-platform-webapp/src
+        run: dotnet publish
