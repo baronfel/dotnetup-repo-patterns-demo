@@ -35,8 +35,10 @@ jobs:
       # The same command works identically on every platform — this is
       # the key value proposition for cross-platform teams.
       - name: Install .NET SDK via dotnetup
-        run: dotnetup install
+        run: dotnetup install --install-path .dotnet --manifest-path .dotnetup.json --set-default-install
 
+      - name: Show dotnet install
+        run: dotnet --info
       - name: Restore
         run: dotnet restore
 
