@@ -6,15 +6,22 @@ runs:
   steps:
     - name: Clone dotnet/sdk (release/dnup)
       shell: bash
-      run: | 
+      run: |
         git clone --depth 1 --branch release/dnup \
           https://github.com/dotnet/sdk.git \
           "${{ runner.temp }}/dotnet-sdk"
 
+    - name: Restore toolsets
+      shell: bash
+      run: |
+        . "${{ runner.temp }}/dotnet-sdk/eng/common/tools.sh" \
+        && . "${{ runner.temp }}/dotnet-sdk/eng/configure-toolset.sh" \
+        && . "${{ runner.temp }}/dotnet-sdk/eng/restore-toolset.sh"
+
     - name: Publish dotnetup (NativeAOT)
       shell: bash
       run: |
-        dotnet publish \
+        ${{ runner.temp }}/dotnet-sdk/.dotnet/dotnet publish \
           "${{ runner.temp }}/dotnet-sdk/src/Installer/dotnetup" \
           -c Release \
           -o "${{ runner.temp }}/dotnetup-bin"
