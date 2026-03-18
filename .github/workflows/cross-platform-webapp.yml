@@ -41,13 +41,15 @@ jobs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> "$GITHUB_ENV" \
+          echo $PATH \
+          && echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> "$GITHUB_ENV" \
           && echo "${{ github.workspace }}/.dotnet" >> "$GITHUB_PATH"
       
       - name: Setup dotnetup hive
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
+          echo $env:PATH;
           echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> $env:GITHUB_ENV;
           echo "${{ github.workspace }}/.dotnet" >> $env:GITHUB_PATH;
 
