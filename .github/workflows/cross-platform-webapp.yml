@@ -41,20 +41,27 @@ jobs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          echo $PATH \
-          && echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> "$GITHUB_ENV" \
+          echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> "$GITHUB_ENV" \
           && echo "${{ github.workspace }}/.dotnet" >> "$GITHUB_PATH"
-      
+
       - name: Setup dotnetup hive
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          echo $env:PATH;
           echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> $env:GITHUB_ENV;
           echo "${{ github.workspace }}/.dotnet" >> $env:GITHUB_PATH;
 
       - name: Show dotnet install
-        run: dotnet --info
+        if: runner.os == 'Windows'
+        run: |
+          echo $env:PATH;
+          dotnet --info
+
+      - name: Show dotnet install
+        if: runner.os != 'Windows'
+        run: |
+          echo $PATH && \
+          dotnet --info
 
       - name: Publish
         working-directory: scenarios/cross-platform-webapp/src/MyApp.Web
