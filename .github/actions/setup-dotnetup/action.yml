@@ -4,12 +4,11 @@ description: 'Builds dotnetup from source (dotnet/sdk release/dnup branch) and a
 runs:
   using: 'composite'
   steps:
-    - name: Clone dotnet/sdk (Noah's walkthrough branch) (using explicit commit because HEAD is broken)
+    - name: Clone dotnet/sdk (Noah's walkthrough branch)
       shell: bash
       run: |
-        git clone --depth 20 --branch nagilson-dnup-walkthrough-ux https://github.com/nagilson/sdk.git "${{ runner.temp }}/dotnet-sdk" && \
-        cd "${{ runner.temp }}/dotnet-sdk" && \
-        git checkout 2a606f4d3caf2346305cfe407464756dd44c2b2a
+        git clone --depth 1 --branch nagilson-dnup-walkthrough-ux https://github.com/nagilson/sdk.git "${{ runner.temp }}/dotnet-sdk" && \
+        cd "${{ runner.temp }}/dotnet-sdk"
 
     - name: Restore toolsets
       if: runner.os != 'Windows'
