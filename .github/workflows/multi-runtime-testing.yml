@@ -58,6 +58,26 @@ jobs:
           echo "Installing runtimes: $args"
           dotnetup runtime install $args --install-path ${{ env.LOCAL_INSTALL_ROOT }} --manifest-path .dotnetup.json
 
+      - name: show install root contents
+        if: runner.os != 'Windows'
+        run: ls -la ${{ env.LOCAL_INSTALL_ROOT }}
+
+      - name: show install root contents
+        if: runner.os == 'Windows'
+        run: ls ${{ env.LOCAL_INSTALL_ROOT }}
+
+      - name: Show dotnet install
+        if: runner.os == 'Windows'
+        run: |
+          echo $env:PATH;
+          dotnet --info
+
+      - name: Show dotnet install
+        if: runner.os != 'Windows'
+        run: |
+          echo $PATH && \
+          dotnet --info
+
       # Tests run against all three target frameworks (net8.0, net9.0, net10.0).
       # Because dotnetup installed all the required runtimes, this Just Works™.
       - name: Test (all target frameworks)
