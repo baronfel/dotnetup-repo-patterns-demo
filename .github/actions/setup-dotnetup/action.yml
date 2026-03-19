@@ -4,12 +4,14 @@ description: 'Builds dotnetup from source (dotnet/sdk release/dnup branch) and a
 runs:
   using: 'composite'
   steps:
-    - name: Clone dotnet/sdk (release/dnup)
+    - name: Clone dotnet/sdk (Noah's walkthrough branch)
       shell: bash
       run: |
         git clone --depth 1 --branch release/dnup \
           https://github.com/dotnet/sdk.git \
-          "${{ runner.temp }}/dotnet-sdk"
+          "${{ runner.temp }}/dotnet-sdk" && \
+        cd "${{ runner.temp }}/dotnet-sdk" && git fetch upstream pull/53464/head && \
+        git checkout FETCH_HEAD
 
     - name: Restore toolsets
       if: runner.os != 'Windows'
