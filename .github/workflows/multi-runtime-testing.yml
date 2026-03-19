@@ -17,6 +17,9 @@ defaults:
   run:
     working-directory: scenarios/multi-runtime-testing
 
+env:
+  LOCAL_INSTALL_ROOT: ${{ github.workspace }}/.dotnet
+
 jobs:
   test:
     name: Test on ${{ matrix.os }}
@@ -33,12 +36,12 @@ jobs:
         uses: ./.github/actions/setup-dotnetup
 
       - name: Install .NET SDK via dotnetup
-        run: dotnetup install --install-path .dotnet --manifest-path .dotnetup.json
+        run: dotnetup install --install-path ${{ env.LOCAL_INSTALL_ROOT }} --manifest-path .dotnetup.json
 
       - name: Setup dotnetup hive
         run: |
-          echo "DOTNET_ROOT=${{ github.workspace }}/.dotnet" >> "$GITHUB_ENV" \
-          && echo "PATH=${{ github.workspace }}/.dotnet:${PATH}" >> "$GITHUB_ENV"
+          echo "DOTNET_ROOT=${{ env.LOCAL_INSTALL_ROOT }}" >> "$GITHUB_ENV" \
+          && echo "PATH=${{ env.LOCAL_INSTALL_ROOT }}:${PATH}" >> "$GITHUB_ENV"
 
       # Install the runtimes listed in global.json's "runtimes.dotnet" array.
       # The SDK already provides the runtime matching its major version, so
@@ -46,13 +49,14 @@ jobs:
       - name: Install additional runtimes for test targets
         run: |
           sdk_major=$(jq -r '.sdk.version | split(".")[0]' global.json)
-          jq -r '.runtimes.dotnet[]' global.json | while read -r version; do
+          args=$(jq -r '.runtimes.dotnet[]' global.json | while read -r version; do
             major=$(echo "$version" | cut -d. -f1)
             if [ "$major" != "$sdk_major" ]; then
-              echo "Installing runtime $version"
-              dotnetup runtime install "$version" --install-path .dotnet --manifest-path .dotnetup.json
+              echo "runtime@$version"
             fi
-          done
+          done | tr '\n' ' ')
+          echo "Installing runtimes: $args"
+          dotnetup runtime install $args --install-path ${{ env.LOCAL_INSTALL_ROOT }} --manifest-path .dotnetup.json
 
       # Tests run against all three target frameworks (net8.0, net9.0, net10.0).
       # Because dotnetup installed all the required runtimes, this Just Works™.
