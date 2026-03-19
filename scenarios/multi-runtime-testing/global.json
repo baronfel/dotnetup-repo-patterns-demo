@@ -5,7 +5,7 @@
     "allowPrerelease": false
   },
   "runtimes": {
-    "dotnet": ["8.0", "9.0", "10.0"]
+    "runtime": ["8.0", "9.0", "10.0"]
   },
   "test": {
     "runner": "Microsoft.Testing.Platform"

@@ -5,7 +5,7 @@
     "allowPrerelease": false
   },
   "runtimes": {
-    "dotnet": ["8.0", "10.0"],
+    "runtime": ["8.0", "10.0"],
     "aspnet": ["8.0", "10.0"]
   }
 }
