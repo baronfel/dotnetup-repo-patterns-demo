@@ -17,18 +17,14 @@ defaults:
   run:
     working-directory: scenarios/sdk-update
 
-    
+
 env:
   LOCAL_INSTALL_ROOT: .dotnet
 
 jobs:
   build:
-    name: Build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-      fail-fast: false
+    name: Show updates for installed tooling
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
