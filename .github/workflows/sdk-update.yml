@@ -38,12 +38,18 @@ jobs:
         with:
           dotnet-install-root: ${{ env.LOCAL_INSTALL_ROOT }}
           manifest-path: .dotnetup.json
-      
+
+      - name: Show dotnetup install state
+        shell: bash
+        run: |
+          dotnetup list --manifest-path .dotnetup.json --install-path ${{ env.LOCAL_INSTALL_ROOT }}
+
       - name: Show updates for updates
         shell: bash
         run: |
-          dotnetup update --manifest-path .dotnetup.json
+          dotnetup update --manifest-path .dotnetup.json --install-path ${{ env.LOCAL_INSTALL_ROOT }}
 
-      - name: Test
-        working-directory: scenarios/sdk-update/test/MyLib.Tests
-        run: dotnet test
+      - name: Show dotnetup install state after update
+        shell: bash
+        run: |
+          dotnetup list --manifest-path .dotnetup.json --install-path ${{ env.LOCAL_INSTALL_ROOT }}
