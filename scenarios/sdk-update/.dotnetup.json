@@ -13,27 +13,95 @@
         },
         {
           "component": "Runtime",
-          "versionOrChannel": "8.0",
-          "installSource": "GlobalJson",
-          "globalJsonPath": ".\\global.json"
+          "versionOrChannel": "10",
+          "installSource": "Explicit",
+          "globalJsonPath": null
         },
         {
           "component": "Runtime",
-          "versionOrChannel": "10.0",
-          "installSource": "GlobalJson",
-          "globalJsonPath": ".\\global.json"
+          "versionOrChannel": "8",
+          "installSource": "Explicit",
+          "globalJsonPath": null
         },
         {
           "component": "ASPNETCore",
-          "versionOrChannel": "8.0",
-          "installSource": "GlobalJson",
-          "globalJsonPath": ".\\global.json"
+          "versionOrChannel": "10",
+          "installSource": "Explicit",
+          "globalJsonPath": null
         },
         {
           "component": "ASPNETCore",
-          "versionOrChannel": "10.0",
-          "installSource": "GlobalJson",
-          "globalJsonPath": ".\\global.json"
+          "versionOrChannel": "8",
+          "installSource": "Explicit",
+          "globalJsonPath": null
+        }
+      ],
+      "installations": [
+        {
+          "component": "SDK",
+          "version": "10.0.105",
+          "subcomponents": [
+            "sdk/10.0.105",
+            "templates/10.0.5",
+            "host/fxr/10.0.5",
+            "shared/Microsoft.AspNetCore.App/10.0.5",
+            "shared/Microsoft.NETCore.App/10.0.5",
+            "shared/Microsoft.WindowsDesktop.App/10.0.5",
+            "packs/Microsoft.AspNetCore.App.Ref/10.0.5",
+            "packs/Microsoft.NETCore.App.Ref/10.0.5",
+            "packs/Microsoft.WindowsDesktop.App.Ref/10.0.5",
+            "sdk-manifests/10.0.100/microsoft.net.sdk.android/36.1.2",
+            "sdk-manifests/10.0.100/microsoft.net.sdk.ios/26.0.11017",
+            "sdk-manifests/10.0.100/microsoft.net.sdk.maccatalyst/26.0.11017",
+            "sdk-manifests/10.0.100/microsoft.net.sdk.macos/26.0.11017",
+            "sdk-manifests/10.0.100/microsoft.net.sdk.maui/10.0.0",
+            "sdk-manifests/10.0.100/microsoft.net.sdk.tvos/26.0.11017",
+            "sdk-manifests/10.0.100/microsoft.net.workload.emscripten.current/10.0.105",
+            "sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net6/10.0.105",
+            "sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net7/10.0.105",
+            "sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net8/10.0.105",
+            "sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net9/10.0.105",
+            "sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.current/10.0.105",
+            "sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net6/10.0.105",
+            "sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net7/10.0.105",
+            "sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net8/10.0.105",
+            "sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net9/10.0.105",
+            "packs/Microsoft.NETCore.App.Host.win-x64/10.0.5"
+          ]
+        },
+        {
+          "component": "Runtime",
+          "version": "10.0.4",
+          "subcomponents": [
+            "host/fxr/10.0.4",
+            "shared/Microsoft.NETCore.App/10.0.4"
+          ]
+        },
+        {
+          "component": "Runtime",
+          "version": "8.0.24",
+          "subcomponents": [
+            "host/fxr/8.0.24",
+            "shared/Microsoft.NETCore.App/8.0.24"
+          ]
+        },
+        {
+          "component": "ASPNETCore",
+          "version": "10.0.4",
+          "subcomponents": [
+            "host/fxr/10.0.4",
+            "shared/Microsoft.AspNetCore.App/10.0.4",
+            "shared/Microsoft.NETCore.App/10.0.4"
+          ]
+        },
+        {
+          "component": "ASPNETCore",
+          "version": "8.0.24",
+          "subcomponents": [
+            "host/fxr/8.0.24",
+            "shared/Microsoft.AspNetCore.App/8.0.24",
+            "shared/Microsoft.NETCore.App/8.0.24"
+          ]
         }
       ]
     }
