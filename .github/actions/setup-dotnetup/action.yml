@@ -81,7 +81,7 @@ runs:
       shell: bash
       run:
         if [ -f global.json ]; then
-          echo "global_json_exists=true" >> "$GITHUB_OUTPUT"
+          echo "global_json_exists=true" >> "$GITHUB_OUTPUT" && \
           echo "global_json_path=$(pwd)/global.json" >> "$GITHUB_OUTPUT"
         else
           echo "global_json_exists=false" >> "$GITHUB_OUTPUT"
