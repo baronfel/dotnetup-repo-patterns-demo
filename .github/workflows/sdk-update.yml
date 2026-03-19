@@ -34,7 +34,7 @@ jobs:
         uses: ./.github/actions/setup-dotnetup
         with:
           dotnet-install-root: ${{ env.LOCAL_INSTALL_ROOT }}
-          manifest-path: .dotnetup.json
+          dotnetup-manifest-path: .dotnetup.json
           working-directory: ${{ github.workspace }}/scenarios/sdk-update
 
       - name: Show dotnetup install state
