@@ -35,45 +35,17 @@ jobs:
 
       - name: Setup dotnetup
         uses: ./.github/actions/setup-dotnetup
-
-      # dotnetup reads the global.json and installs the pinned SDK version.
-      # The same command works identically on every platform — this is
-      # the key value proposition for cross-platform teams.
-      - name: Install .NET SDK via dotnetup
-        run: dotnetup install --install-path ${{ env.LOCAL_INSTALL_ROOT }} --manifest-path .dotnetup.json
-
-      - name: Setup dotnetup hive
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          echo "DOTNET_ROOT=${{ env.LOCAL_INSTALL_ROOT }}" >> "$GITHUB_ENV" \
-          && echo "${{ env.LOCAL_INSTALL_ROOT }}" >> "$GITHUB_PATH"
-
-      - name: Setup dotnetup hive
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          echo "DOTNET_ROOT=${{ env.LOCAL_INSTALL_ROOT }}" >> $env:GITHUB_ENV;
-          echo "${{ env.LOCAL_INSTALL_ROOT }}" >> $env:GITHUB_PATH;
-
-      - name: show install root contents
-        if: runner.os != 'Windows'
-        run: ls -la ${{ env.LOCAL_INSTALL_ROOT }}
-
-      - name: show install root contents
-        if: runner.os == 'Windows'
-        run: ls ${{ env.LOCAL_INSTALL_ROOT }}
+        with:
+          dotnet-install-root: ${{ env.LOCAL_INSTALL_ROOT }}
 
       - name: Show dotnet install
         if: runner.os == 'Windows'
         run: |
-          echo $env:PATH;
           dotnet --info
 
       - name: Show dotnet install
         if: runner.os != 'Windows'
         run: |
-          echo $PATH && \
           dotnet --info
 
       - name: Publish

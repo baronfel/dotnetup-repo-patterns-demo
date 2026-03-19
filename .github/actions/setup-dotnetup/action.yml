@@ -1,6 +1,16 @@
 name: 'Setup dotnetup'
 description: 'Builds dotnetup from source (dotnet/sdk release/dnup branch) and adds it to PATH'
 
+inputs:
+  dotnet-install-root:
+    description: 'The directory where .NET toolchains should be installed. This is typically a local directory within the repo, like .dotnet., or a user-global directory like ~/.dotnet'
+    required: false
+    default: '.dotnet'
+  dotnetup-manifest-path:
+    description: 'Path to the dotnetup manifest file that describes the "current" install state. If not provided, the action will create one in default, user-global locations.'
+    required: false
+    default: '.dotnetup.json'
+
 runs:
   using: 'composite'
   steps:
@@ -48,3 +58,61 @@ runs:
       shell: bash
       run: |
         echo "${{ runner.temp }}/dotnetup-bin" >> "$GITHUB_PATH"
+
+    - name: Setup dotnetup install root
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        echo "DOTNET_ROOT=${{ inputs.dotnet-install-root }}" >> "$GITHUB_ENV" \
+        && echo "${{ inputs.dotnet-install-root }}" >> "$GITHUB_PATH"
+
+    - name: Setup dotnetup install root
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        echo "DOTNET_ROOT=${{ inputs.dotnet-install-root }}" >> $env:GITHUB_ENV;
+        echo "${{ inputs.dotnet-install-root }}" >> $env:GITHUB_PATH;
+
+    - name: install sdk via dotnetup
+      shell: bash
+      run: dotnetup install --install-path ${{ inputs.dotnet-install-root }} --manifest-path ${{ inputs.dotnetup-manifest-path }}
+
+    - name: discover global.json
+      shell: bash
+      run:
+        if [ -f global.json ]; then
+          echo "global_json_exists=true" >> "$GITHUB_OUTPUT"
+          echo "global_json_path=$(pwd)/global.json" >> "$GITHUB_OUTPUT"
+        else
+          echo "global_json_exists=false" >> "$GITHUB_OUTPUT"
+        fi
+    - name: install runtimes if present in global.json
+      if: steps.discover_global_json.outputs.global_json_exists == 'true'
+      shell: bash
+      run: |
+        global_json="${{ steps.discover_global_json.outputs.global_json_path }}"
+        sdk_major=$(jq -r '.sdk.version | split(".")[0]' "$global_json")
+        args=$(jq -r '
+          .runtimes // {} |
+          to_entries[] |
+          . as $entry |
+          $entry.value[] |
+          [$entry.key, .] | join("@")
+        ' "$global_json" | while read -r spec; do
+          kind="${spec%%@*}"
+          version="${spec##*@}"
+          major=$(echo "$version" | cut -d. -f1)
+          # Skip the runtime type that already ships with the SDK (dotnet@<sdk_major>)
+          if [ "$kind" != "dotnet" ] || [ "$major" != "$sdk_major" ]; then
+            echo "$spec"
+          fi
+        done | tr '\n' ' ')
+        echo "Installing runtimes: $args"
+        dotnetup runtime install $args --install-path ${{ inputs.dotnet-install-root }} --manifest-path ${{ inputs.dotnetup-manifest-path }}
+
+    - name: List install contents when debugging
+      if: vars.ACTIONS_STEP_DEBUG == 'true' || env.ACTIONS_STEP_DEBUG == 'true' || secrets.ACTIONS_STEP_DEBUG == 'true'
+      shell: bash
+      run: |
+        ls -la "${{ inputs.dotnet-install-root }}"
+

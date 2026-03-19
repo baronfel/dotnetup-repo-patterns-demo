@@ -34,48 +34,17 @@ jobs:
 
       - name: Setup dotnetup
         uses: ./.github/actions/setup-dotnetup
-
-      - name: Install .NET SDK via dotnetup
-        run: dotnetup install --install-path ${{ env.LOCAL_INSTALL_ROOT }} --manifest-path .dotnetup.json
-
-      - name: Setup dotnetup hive
-        run: |
-          echo "DOTNET_ROOT=${{ env.LOCAL_INSTALL_ROOT }}" >> "$GITHUB_ENV" \
-          && echo "PATH=${{ env.LOCAL_INSTALL_ROOT }}:${PATH}" >> "$GITHUB_ENV"
-
-      # Install the runtimes listed in global.json's "runtimes.dotnet" array.
-      # The SDK already provides the runtime matching its major version, so
-      # we filter that out and install the rest.
-      - name: Install additional runtimes for test targets
-        run: |
-          sdk_major=$(jq -r '.sdk.version | split(".")[0]' global.json)
-          args=$(jq -r '.runtimes.dotnet[]' global.json | while read -r version; do
-            major=$(echo "$version" | cut -d. -f1)
-            if [ "$major" != "$sdk_major" ]; then
-              echo "runtime@$version"
-            fi
-          done | tr '\n' ' ')
-          echo "Installing runtimes: $args"
-          dotnetup runtime install $args --install-path ${{ env.LOCAL_INSTALL_ROOT }} --manifest-path .dotnetup.json
-
-      - name: show install root contents
-        if: runner.os != 'Windows'
-        run: ls -la ${{ env.LOCAL_INSTALL_ROOT }}
-
-      - name: show install root contents
-        if: runner.os == 'Windows'
-        run: ls ${{ env.LOCAL_INSTALL_ROOT }}
+        with:
+          dotnet-install-root: ${{ env.LOCAL_INSTALL_ROOT }}
 
       - name: Show dotnet install
         if: runner.os == 'Windows'
         run: |
-          echo $env:PATH;
           dotnet --info
 
       - name: Show dotnet install
         if: runner.os != 'Windows'
         run: |
-          echo $PATH && \
           dotnet --info
 
       # Tests run against all three target frameworks (net8.0, net9.0, net10.0).
