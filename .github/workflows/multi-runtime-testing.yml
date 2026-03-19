@@ -18,7 +18,7 @@ defaults:
     working-directory: scenarios/multi-runtime-testing
 
 env:
-  LOCAL_INSTALL_ROOT: ${{ github.workspace }}/.dotnet
+  LOCAL_INSTALL_ROOT: .dotnet
 
 jobs:
   test:
@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup dotnetup
         uses: ./.github/actions/setup-dotnetup
