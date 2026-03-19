@@ -5,10 +5,12 @@ on:
     paths:
       - "scenarios/multi-runtime-testing/**"
       - ".github/workflows/multi-runtime-testing.yml"
+      - ".github/actions/setup-dotnetup/**"
   pull_request:
     paths:
       - "scenarios/multi-runtime-testing/**"
       - ".github/workflows/multi-runtime-testing.yml"
+      - ".github/actions/setup-dotnetup/**"
   workflow_dispatch:
 
 defaults:

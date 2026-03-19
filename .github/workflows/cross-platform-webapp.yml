@@ -5,10 +5,12 @@ on:
     paths:
       - "scenarios/cross-platform-webapp/**"
       - ".github/workflows/cross-platform-webapp.yml"
+      - ".github/actions/setup-dotnetup/**"
   pull_request:
     paths:
       - "scenarios/cross-platform-webapp/**"
       - ".github/workflows/cross-platform-webapp.yml"
+      - ".github/actions/setup-dotnetup/**"
   workflow_dispatch:
 
 defaults:
