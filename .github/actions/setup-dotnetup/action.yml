@@ -59,23 +59,23 @@ runs:
       run: |
         echo "${{ runner.temp }}/dotnetup-bin" >> "$GITHUB_PATH"
 
+    - name: install sdk via dotnetup
+      shell: bash
+      run: dotnetup install --install-path ${{ inputs.dotnet-install-root }} --manifest-path ${{ inputs.dotnetup-manifest-path }}
+
     - name: Setup dotnetup install root
       if: runner.os != 'Windows'
       shell: bash
       run: |
         echo "DOTNET_ROOT=${{ inputs.dotnet-install-root }}" >> "$GITHUB_ENV" \
-        && echo "${{ inputs.dotnet-install-root }}" >> "$GITHUB_PATH"
+        && realpath "${{ inputs.dotnet-install-root }}" >> "$GITHUB_PATH"
 
     - name: Setup dotnetup install root
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
         echo "DOTNET_ROOT=${{ inputs.dotnet-install-root }}" >> $env:GITHUB_ENV;
-        echo "${{ inputs.dotnet-install-root }}" >> $env:GITHUB_PATH;
-
-    - name: install sdk via dotnetup
-      shell: bash
-      run: dotnetup install --install-path ${{ inputs.dotnet-install-root }} --manifest-path ${{ inputs.dotnetup-manifest-path }}
+        (Resolve-Path ${{ inputs.dotnet-install-root }}).Path | Out-File $env:GITHUB_PATH -Append;
 
     - name: discover global.json
       id: discover_global_json
