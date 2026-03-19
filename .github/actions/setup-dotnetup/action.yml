@@ -78,6 +78,7 @@ runs:
       run: dotnetup install --install-path ${{ inputs.dotnet-install-root }} --manifest-path ${{ inputs.dotnetup-manifest-path }}
 
     - name: discover global.json
+      id: discover_global_json
       shell: bash
       run:
         if [ -f global.json ]; then
