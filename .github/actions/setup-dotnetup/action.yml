@@ -10,7 +10,7 @@ runs:
         git clone --depth 1 --branch release/dnup \
           https://github.com/dotnet/sdk.git \
           "${{ runner.temp }}/dotnet-sdk" && \
-        cd "${{ runner.temp }}/dotnet-sdk" && git fetch upstream pull/53464/head && \
+        cd "${{ runner.temp }}/dotnet-sdk" && git fetch origin pull/53464/head && \
         git checkout FETCH_HEAD
 
     - name: Restore toolsets
