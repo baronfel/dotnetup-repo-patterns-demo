@@ -13,6 +13,7 @@ source code, GitHub Actions workflow, and README explaining the intent and how t
 |---|---|
 | [**Multi-Runtime Testing**](scenarios/multi-runtime-testing/) | A `netstandard2.0` library with a test project that multi-targets `net8.0`, `net9.0`, and `net10.0`. `dotnetup install` acquires the SDK **and** all required runtimes so tests can run against every target. |
 | [**Cross-Platform Webapp**](scenarios/cross-platform-webapp/) | An ASP.NET Core webapp + class library used by a team on Windows, macOS, and Linux. The `global.json` pins the SDK, and `dotnetup install` ensures every developer and CI runner gets exactly the right version — no manual downloads, no platform-specific steps. |
+| [**SDK Update**](scenarios/sdk-update/) | A workspace that pins its SDK in `global.json`. Updating to a newer SDK is a one-line change — `dotnetup install` propagates it to every developer and CI runner automatically, on every platform. |
 
 ## Getting started
 

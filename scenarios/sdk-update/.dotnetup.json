@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1",
+  "dotnetRoots": [
+    {
+      "path": ".dotnet",
+      "architecture": "x64",
+      "installSpecs": [
+        {
+          "component": "SDK",
+          "versionOrChannel": "10.0.1xx",
+          "installSource": "GlobalJson",
+          "globalJsonPath": ".\\global.json"
+        },
+        {
+          "component": "Runtime",
+          "versionOrChannel": "8.0",
+          "installSource": "GlobalJson",
+          "globalJsonPath": ".\\global.json"
+        },
+        {
+          "component": "Runtime",
+          "versionOrChannel": "10.0",
+          "installSource": "GlobalJson",
+          "globalJsonPath": ".\\global.json"
+        },
+        {
+          "component": "ASPNETCore",
+          "versionOrChannel": "8.0",
+          "installSource": "GlobalJson",
+          "globalJsonPath": ".\\global.json"
+        },
+        {
+          "component": "ASPNETCore",
+          "versionOrChannel": "10.0",
+          "installSource": "GlobalJson",
+          "globalJsonPath": ".\\global.json"
+        }
+      ]
+    }
+  ]
+}
