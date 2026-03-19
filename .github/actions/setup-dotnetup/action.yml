@@ -113,7 +113,7 @@ runs:
         dotnetup runtime install $args --install-path ${{ inputs.dotnet-install-root }} --manifest-path ${{ inputs.dotnetup-manifest-path }}
 
     - name: List install contents when debugging
-      if: env.RUNNER_DEBUG == '1'
+      if: env.RUNNER_DEBUG == '1' || env.ACTIONS_STEP_DEBUG == 'true'
       shell: bash
       run: |
         ls -la "${{ inputs.dotnet-install-root }}"
