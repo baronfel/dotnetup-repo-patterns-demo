@@ -10,6 +10,10 @@ inputs:
     description: 'Path to the dotnetup manifest file that describes the "current" install state. If not provided, the action will create one in default, user-global locations.'
     required: false
     default: '.dotnetup.json'
+  working-directory:
+    description: 'The directory in which to run the action. This should typically be the root of the repo, since that is where global.json and the manifest file are typically located.'
+    required: false
+    default: '.'
 
 runs:
   using: 'composite'
@@ -61,10 +65,12 @@ runs:
 
     - name: install sdk via dotnetup
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: dotnetup install --install-path ${{ inputs.dotnet-install-root }} --manifest-path ${{ inputs.dotnetup-manifest-path }}
 
     - name: Setup dotnetup install root
       if: runner.os != 'Windows'
+      working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
         echo "DOTNET_ROOT=${{ inputs.dotnet-install-root }}" >> "$GITHUB_ENV" \
@@ -72,6 +78,7 @@ runs:
 
     - name: Setup dotnetup install root
       if: runner.os == 'Windows'
+      working-directory: ${{ inputs.working-directory }}
       shell: pwsh
       run: |
         echo "DOTNET_ROOT=${{ inputs.dotnet-install-root }}" >> $env:GITHUB_ENV;
@@ -79,6 +86,7 @@ runs:
 
     - name: discover global.json
       id: discover_global_json
+      working-directory: ${{ inputs.working-directory }}
       shell: bash
       run:
         if [ -f global.json ]; then
@@ -89,6 +97,7 @@ runs:
         fi
 
     - name: install runtimes if present in global.json
+      working-directory: ${{ inputs.working-directory }}
       if: steps.discover_global_json.outputs.global_json_exists == 'true'
       shell: bash
       run: |
@@ -115,6 +124,7 @@ runs:
     - name: List install contents when debugging
       if: env.RUNNER_DEBUG == '1' || env.ACTIONS_STEP_DEBUG == 'true'
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         ls -la "${{ inputs.dotnet-install-root }}"
 

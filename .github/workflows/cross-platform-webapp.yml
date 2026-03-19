@@ -37,6 +37,7 @@ jobs:
         uses: ./.github/actions/setup-dotnetup
         with:
           dotnet-install-root: ${{ env.LOCAL_INSTALL_ROOT }}
+          working-directory: ${{ github.workspace }}/scenarios/cross-platform-webapp
 
       - name: Show dotnet install
         if: runner.os == 'Windows'
