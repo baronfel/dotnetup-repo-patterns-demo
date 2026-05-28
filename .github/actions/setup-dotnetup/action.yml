@@ -18,50 +18,31 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Clone dotnet/sdk (Noah's walkthrough branch)
-      shell: bash
-      run: |
-        git clone --depth 1 --branch nagilson-dnup-walkthrough-ux https://github.com/nagilson/sdk.git "${{ runner.temp }}/dotnet-sdk" && \
-        cd "${{ runner.temp }}/dotnet-sdk"
 
-    - name: Restore toolsets
+    - name: Download dotnetup
       if: runner.os != 'Windows'
       shell: bash
       run: |
-        . "${{ runner.temp }}/dotnet-sdk/eng/common/tools.sh" \
-        && . "${{ runner.temp }}/dotnet-sdk/eng/configure-toolset.sh" \
-        && . "${{ runner.temp }}/dotnet-sdk/eng/restore-toolset.sh"
+        curl -sSL https://aka.ms/dotnetup/get-dotnetup.sh -o get-dotnetup.sh
+        chmod +x get-dotnetup.sh
+        ./get-dotnetup.sh
 
-    - name: Restore toolsets
+    - name: Download dotnetup
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
-        . "${{ runner.temp }}/dotnet-sdk/eng/common/tools.ps1";
-        . "${{ runner.temp }}/dotnet-sdk/eng/configure-toolset.ps1";
-        . "${{ runner.temp }}/dotnet-sdk/eng/restore-toolset.ps1";
-
-    - name: Publish dotnetup (NativeAOT)
-      if: runner.os != 'Windows'
-      shell: bash
-      run: |
-        ${{ runner.temp }}/dotnet-sdk/.dotnet/dotnet publish \
-          "${{ runner.temp }}/dotnet-sdk/src/Installer/dotnetup" \
-          -c Release \
-          -o "${{ runner.temp }}/dotnetup-bin"
-
-    - name: Publish dotnetup (NativeAOT)
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: |
-        ${{ runner.temp }}/dotnet-sdk/.dotnet/dotnet.exe publish `
-          "${{ runner.temp }}/dotnet-sdk/src/Installer/dotnetup" `
-          -c Release `
-          -o "${{ runner.temp }}/dotnetup-bin"
+        iwr https://aka.ms/dotnetup/get-dotnetup.ps1 | iex
 
     - name: Add dotnetup to PATH
       shell: bash
       run: |
-        echo "${{ runner.temp }}/dotnetup-bin" >> "$GITHUB_PATH"
+        echo "$HOME/.dotnetup" >> "$GITHUB_PATH"
+
+    - name: Ensure that local/share exists on ubuntu runner
+      shell: bash
+      if: runner.os == 'Linux'
+      run: |
+        mkdir -p "$HOME/.local/share"
 
     - name: install sdk via dotnetup
       shell: bash
